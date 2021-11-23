@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, StyleSheet, Button, TouchableHighlight} from 'react-native'
+import {Text, View, StyleSheet, Button, TouchableHighlight} from 'react-native';
 
 const Cita = ({cita, eliminarPaciente}) => {
 
