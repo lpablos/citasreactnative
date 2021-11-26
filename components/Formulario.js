@@ -7,12 +7,14 @@ import {
   Button,
   TouchableHighlight,
   Alert,
+  ScrollView,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import shortid from 'shortid';
 
-const Formulario = () => {
+const Formulario = ({citas, setCitas, setMostrarForm}) => {
   const [paciente, setPaciente] = useState('');
-  const [dueno, setDueno] = useState('');
+  const [propietario, setPropietario] = useState('');
   const [contacto, setContacto] = useState('');
   const [fecha, setFecha] = useState('');
   const [hora, setHora] = useState('');
@@ -43,8 +45,8 @@ const Formulario = () => {
     hideDatePicker();
   };
   const confirmarHora = hora => {
-    const opciones = {hour: 'numeric', minute: '2-digit', hour12: false};
-    setHora(hora.toLocaleString('es-US', opciones));
+    const opciones = { hour: 'numeric', minute: '2-digit', hour12: false};
+    setHora(hora.toLocaleString('es-ES', opciones));
     hideTimePicker();
   };
 
@@ -52,27 +54,37 @@ const Formulario = () => {
     console.log('Estas creando una nueva cita');
     if (
       paciente.trim() === '' ||
-      dueno.trim() === '' ||
+      propietario.trim() === '' ||
       contacto.trim() === '' ||
       fecha.trim() === '' ||
       hora.trim() === '' ||
       sintomas.trim() === ''
     ) {
-      console.log('Validacion falla ');
+      // Faltan campos al formulario
       showAlert();
       return;
     }
+    // Pasa la validacion
+    const cita = {paciente, propietario, contacto, fecha, hora, sintomas};
+    cita.id = shortid.generate();
+    nuevasCitas = [...citas, cita];
+    // Agrego la cita
+    setCitas(nuevasCitas);
+    // Oculto Formulario
+    setMostrarForm(false);
+    
   };
 
-  const showAlert = () =>
+  const showAlert = () =>{
     Alert.alert('Error', 'Todos los campos son obligatorios', [
       {
         text: 'Ok'
       },
     ]);
+  };
 
   return (
-    <View style={styles.formulario}>
+    <ScrollView style={styles.formulario}>
       <View>
         <Text style={styles.label}>Paciente:</Text>
         <TextInput
@@ -85,8 +97,8 @@ const Formulario = () => {
         <Text style={styles.label}>Dueño:</Text>
         <TextInput
           style={styles.input}
-          value={dueno}
-          onChangeText={txt => setDueno(txt)}
+          value={propietario}
+          onChangeText={txt => setPropietario(txt)}
         />
       </View>
       <View>
@@ -136,11 +148,11 @@ const Formulario = () => {
           onPress={() => crearNuevaCita()}
           style={styles.btnSubmit}>
           <View>
-            <Text style={styles.textSubmit}>Touch Here</Text>
+            <Text style={styles.textSubmit}>Crear Cita</Text>
           </View>
         </TouchableHighlight>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
